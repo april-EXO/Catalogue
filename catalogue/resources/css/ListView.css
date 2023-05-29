@@ -1,0 +1,56 @@
+.order-list {
+	background-color: #fce4ec;
+	padding: 20px;
+  }
+  
+  .order-list h2 {
+	color: #ff4081;
+  }
+  
+  .order-list table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+  }
+  
+  .order-list th,
+  .order-list td {
+	padding: 10px;
+	text-align: left;
+	border-bottom: 1px solid #ff4081;
+  }
+  
+  .order-list th {
+	background-color: #ff4081;
+	color: #fff;
+  }
+  
+  .order-list tbody tr:nth-child(even) {
+	background-color: #f8bbd0;
+  }
+  
+  .order-list button {
+	background-color: #ff4081;
+	color: #fff;
+	border: none;
+	padding: 8px 12px;
+	border-radius: 4px;
+	cursor: pointer;
+  }
+  
+  .order-list button:hover {
+	background-color: #d81b60;
+  }
+  
+  .order-list a {
+	display: inline-block;
+	margin-bottom: 10px;
+	color: #ff4081;
+	text-decoration: none;
+	font-weight: bold;
+  }
+  
+  .order-list a:hover {
+	text-decoration: underline;
+  }
+  
