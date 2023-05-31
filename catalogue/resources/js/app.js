@@ -15,6 +15,8 @@ const app = createApp({});
 app.component('catalogue', Catalogue);
 app.component('cart', Cart);
 app.component('order', Order);
+app.component('list-view', ListView);
+app.component('details', Details);
 
 const routes = [
 	// { path: '/', component: ExampleComponent },

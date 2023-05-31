@@ -37,11 +37,11 @@ h2 {
 	flex-basis: 50%;
 	border: 1px solid #f50057;
 	border-radius: 4px;
-	background-color: #fce4ec; 
+	background-color: #fce4ec;
 	padding: 20px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
-  }
-  
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 
 .form-table {
 	width: 100%;
@@ -86,4 +86,23 @@ input:hover {
 .submit-order:disabled {
 	background-color: #ccc;
 	cursor: not-allowed;
+}
+
+a {
+	display: inline-block;
+	margin-bottom: 10px;
+	color: #000000;
+	background-color: #f7c1e0;
+	padding: 10px 15px;
+	text-decoration: none;
+	border-radius: 4px;
+}
+
+a:hover {
+	background-color: pink;
+}
+
+a:focus,
+a:active {
+	outline: none;
 }

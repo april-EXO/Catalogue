@@ -14,7 +14,8 @@
 					<option value="desc">Descending (Z-A)</option>
 				</select>
 				<button @click="addToCart" class="cart-button">Add to Cart</button>
-				<span v-if="hasDeliveryOrder"><img class="delivery-icon" src="./bell.png" alt="Delivery Icon" @click="redirectToOrderList" /></span>
+				<span v-if="hasDeliveryOrder"><img class="delivery-icon" src="./bell.png" alt="Delivery Icon"
+						@click="redirectToOrderList" /></span>
 			</div>
 
 		</div>
@@ -83,14 +84,40 @@ export default {
 	},
 
 	mounted() {
+		this.fetchProductsFromCache(); // get products data from cache 
 		this.fetchProducts();
+		this.fetchCartFromStorage(); // get cart items data from cache
+
 	},
 
 	methods: {
 
+		fetchProductsFromCache() {
+			const cachedData = localStorage.getItem('catalogueData');
+			if (cachedData) {
+				try {
+					const { items, cartItems } = JSON.parse(cachedData);
+					this.items = items;
+					this.cartItems = cartItems;
+					this.totalPages = Math.ceil(this.items.length / this.pageSize);
+					this.updateDisplayedItems();
+				} catch (error) {
+					console.error('Error parsing cached data:', error);
+				}
+			}
+		},
+
+		cacheData() {
+			const dataToCache = {
+				items: this.items,
+				cartItems: this.cartItems,
+			};
+			localStorage.setItem('catalogueData', JSON.stringify(dataToCache));
+		},
+
 		fetchProducts() {
 			axios
-				.get('products')
+				.get('products') //get product list from the given api
 				.then((response) => {
 					const products = response.data;
 					this.items = products.map((item) => ({
@@ -100,13 +127,14 @@ export default {
 					}));
 					this.totalPages = Math.ceil(products.length / this.pageSize);
 					this.updateDisplayedItems();
+					this.cacheData(); // Cache the fetched data
 				})
 				.catch((error) => {
-					console.log(error);
+					console.error('Error fetching data:', error);
 				});
 
 			axios
-				.get('/api/get-order')
+				.get('/api/get-order') //get from database - order to check any In Delivery item
 				.then((response) => {
 					const orders = response.data;
 					this.hasDeliveryOrder = orders.some((order) => order.status === 'In Delivery');
@@ -116,31 +144,23 @@ export default {
 				});
 		},
 
+		fetchCartFromStorage() {
+			const cartData = localStorage.getItem('cartItems');
+			if (cartData) {
+				this.cartItems = JSON.parse(cartData);
+			}
+		},
+
+		cacheCartData() {
+			localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
+		},
+
+
 		updateDisplayedItems() {
 			const startIndex = (this.currentPage - 1) * this.pageSize;
 			const endIndex = startIndex + this.pageSize;
 			this.displayedItems = this.items.slice(startIndex, endIndex);
 		},
-
-
-		// fetchProducts() {
-		// 	axios.get('/products')
-		// 		.then((response) => {
-		// 			const products = response.data;
-		// 			this.items = products.map((item) => ({
-		// 				...item,
-		// 				checked: false,
-		// 				quantity: 0,
-		// 			}));
-		// 			this.totalPages = Math.ceil(products.length / this.pageSize);
-		// 			this.updateDisplayedItems();
-		// 		})
-		// 		.catch((error) => {
-		// 			console.log(error);
-		// 		});
-		// },
-
-		
 
 		prevPage() {
 			if (this.currentPage > 1) {
@@ -208,12 +228,14 @@ export default {
 				item.checked = false;
 				item.quantity = 0;
 			}); //reset the checked item
-
+			this.cacheCartData(); // Cache the updated cart data
 			console.log(this.cartItems);
 		},
 
 		removeFromCart(itemId) {
-			this.cartItems = this.cartItems.filter(item => item.id !== itemId);
+			this.cartItems = this.cartItems.filter((item) => item.id !== itemId);
+			this.cacheData(); // Update the cached cart data
+			console.log(this.cartItems);
 		},
 
 		toggleCart() {
