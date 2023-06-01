@@ -1,8 +1,6 @@
 import { createApp } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 
-
-import ExampleComponent from './components/ExampleComponent.vue';
 import Catalogue from './components/Catalogue.vue';
 import Cart from './components/Cart.vue';
 import Order from './components/Order.vue';
@@ -11,7 +9,6 @@ import Details from './components/Details.vue';
 
 const app = createApp({});
 
-// app.component('example-component', ExampleComponent);
 app.component('catalogue', Catalogue);
 app.component('cart', Cart);
 app.component('order', Order);
@@ -19,7 +16,6 @@ app.component('list-view', ListView);
 app.component('details', Details);
 
 const routes = [
-	// { path: '/', component: ExampleComponent },
 	{ path: '/', component: Catalogue },
 	{ path: '/cart', component: Cart },
 	{ path: '/order', component: Order },

@@ -63,8 +63,8 @@ export default {
 			axios
 				.get(`/api/get-order-w-ID/${orderId}`)
 				.then((response) => {
-					const orderData = response.data; 
-					const items = JSON.parse(orderData.items); //parse json to match item
+					const orderData = response.data;
+					const items = JSON.parse(orderData.items); //parse json to match items
 					orderData.items = items.map((item) => ({
 						name: item.name,
 						quantity: item.quantity,

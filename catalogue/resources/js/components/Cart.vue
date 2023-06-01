@@ -18,22 +18,22 @@
   
 <script>
 export default {
-	props: {
+	props: { //data passed from catalogue
 		cartItems: {
 			type: Array,
-			default: () => [],
+			default: () => [], //if parent comp do not have value for cartItems, default will be empty
 		},
 	},
 	methods: {
 		closeCart() {
-			this.$emit('close-cart');
+			this.$emit('close-cart'); //emit event in catalouge.vue
 		},
 		removeItem(itemId) {
-			this.$emit('remove-item', itemId);
+			this.$emit('remove-item', itemId); //emit event in catalouge.vue
 		},
-		redirectToOrder() {
-			const queryParams = { cartItems: JSON.stringify(this.cartItems) };
-			this.$router.push({ path: '/order', query: queryParams });
+		redirectToOrder() { //go order page
+			const queryParams = { cartItems: JSON.stringify(this.cartItems) }; //parse cart items to json
+			this.$router.push({ path: '/order', query: queryParams });//passing json string form cart items to order page
 		},
 	},
 };

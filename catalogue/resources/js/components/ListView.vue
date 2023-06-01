@@ -48,7 +48,7 @@ export default {
 		};
 	},
 	mounted() {
-		this.fetchOrdersFromCache(); // Attempt to load data from cache first
+		this.fetchOrdersFromCache(); // attempt to load data from cache first
 		this.fetchOrders();
 	},
 	methods: {
@@ -70,7 +70,7 @@ export default {
 				.get('api/get-order')
 				.then(response => {
 					this.orders = response.data;
-					this.cacheOrders(); // Cache the fetched orders
+					this.cacheOrders(); // cache the fetched orders
 				})
 				.catch(error => {
 					console.error('Error fetching orders:', error);
@@ -86,7 +86,7 @@ export default {
 					if (order) {
 						order.status = status;
 					}
-					this.cacheOrders(); // Update the cached order list
+					this.cacheOrders(); // update the cached order list
 				})
 				.catch(error => {
 					console.error('Error updating order status:', error);

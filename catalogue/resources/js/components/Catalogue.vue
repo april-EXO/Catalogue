@@ -92,7 +92,7 @@ export default {
 
 	methods: {
 
-		fetchProductsFromCache() {
+		fetchProductsFromCache() { //get Product list from cache
 			const cachedData = localStorage.getItem('catalogueData');
 			if (cachedData) {
 				try {
@@ -107,7 +107,7 @@ export default {
 			}
 		},
 
-		fetchOrderFromCache() {
+		fetchOrderFromCache() { //get cached In delivery order validity
 			const cachedData = localStorage.getItem('orderData');
 			if (cachedData) {
 				try {
@@ -121,21 +121,13 @@ export default {
 		},
 
 
-		cacheData() {
-			const dataToCache = {
-				items: this.items,
-				cartItems: this.cartItems,
-			};
-			localStorage.setItem('catalogueData', JSON.stringify(dataToCache));
-		},
-
-		fetchProducts() {
+		fetchProducts() { //fetch products & orders from API & db
 			axios
 				.get('products') //get product list from the given api
 				.then((response) => {
 					const products = response.data;
 					this.items = products.map((item) => ({
-						...item,
+						...item, //copy existing properties
 						checked: false,
 						quantity: 0,
 					}));
@@ -160,7 +152,15 @@ export default {
 				});
 		},
 
-		fetchCartFromCache() {
+		cacheData() { //store products and cart item to cache
+			const dataToCache = {
+				items: this.items,
+				cartItems: this.cartItems,
+			};
+			localStorage.setItem('catalogueData', JSON.stringify(dataToCache));
+		},
+
+		fetchCartFromCache() { //get cached cartItems
 			const cartData = localStorage.getItem('cartItems');
 			if (cartData) {
 				this.cartItems = JSON.parse(cartData);
@@ -178,7 +178,7 @@ export default {
 		updateDisplayedItems() {
 			const startIndex = (this.currentPage - 1) * this.pageSize;
 			const endIndex = startIndex + this.pageSize;
-			this.displayedItems = this.items.slice(startIndex, endIndex);
+			this.displayedItems = this.items.slice(startIndex, endIndex); //extract subset of items
 		},
 
 		prevPage() {
@@ -195,7 +195,7 @@ export default {
 			}
 		},
 
-		toggleOrder() {
+		toggleOrder() { //sorting items alphabetical order
 			if (this.order === 'asc') {
 				this.items.sort((a, b) => a.name.localeCompare(b.name));
 			} else if (this.order === 'desc') {
@@ -206,7 +206,7 @@ export default {
 		},
 
 		searchProducts() {
-			clearTimeout(this.searchTimeout);
+			clearTimeout(this.searchTimeout); //clear previous search timeout 300ms
 			this.searchTimeout = setTimeout(() => {
 				if (this.searchQuery) {
 					const filteredItems = this.items.filter((item) =>
@@ -223,13 +223,13 @@ export default {
 			}, 300);
 		},
 
-		incrementQuantity(item) {
+		incrementQuantity(item) { // + button
 			if (item.quantity < 99) {
 				item.quantity++;
 			}
 		},
 
-		decrementQuantity(item) {
+		decrementQuantity(item) { // - button
 			if (item.quantity > 1) {
 				item.quantity--;
 			}
@@ -247,14 +247,14 @@ export default {
 				item.checked = false;
 				item.quantity = 0;
 			}); //reset the checked item
-			this.cacheCartData(); // Cache the updated cart data
+			this.cacheCartData(); // cache the updated cart data
 			console.log(this.cartItems);
 		},
 
 		removeFromCart(itemId) {
 			this.cartItems = this.cartItems.filter((item) => item.id !== itemId);
-			this.cacheData(); // Update the cached cart data
-			this.cacheOrderData(this.orders); // Update the cached order data
+			this.cacheData(); // update the cached cart data
+			this.cacheOrderData(this.orders); // update the cached order data
 			console.log(this.cartItems);
 		},
 
@@ -270,9 +270,11 @@ export default {
 				item.quantity = 1;
 			}
 		},
+
 		redirectToOrderList() {
 			this.$router.push('/listview');
 		},
+
 		addStatusToItems(orders) {
 			for (const item of this.items) {
 				const orderWithStatus = orders.find((order) => order.itemId === item.id && order.status === 'In Delivery');

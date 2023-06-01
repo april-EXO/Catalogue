@@ -77,8 +77,7 @@ export default {
 			}
 		},
 
-		isFormValid() {
-			// Form validation logic
+		isFormValid() { //form validation
 			return this.name.trim() !== '' && this.address.trim() !== '' && this.phone.trim() !== '';
 		},
 
