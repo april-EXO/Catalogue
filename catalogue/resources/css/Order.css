@@ -94,7 +94,7 @@ a {
 	color: #000000;
 	background-color: #f7c1e0;
 	padding: 10px 15px;
-	text-decoration: none;
+	text-decoration: underline;
 	border-radius: 4px;
 }
 

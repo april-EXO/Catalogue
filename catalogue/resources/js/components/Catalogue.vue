@@ -85,9 +85,9 @@ export default {
 
 	mounted() {
 		this.fetchProductsFromCache(); // get products data from cache 
+		this.fetchCartFromCache(); // get cart items data from cache
 		this.fetchProducts();
-		this.fetchCartFromStorage(); // get cart items data from cache
-
+		this.fetchOrderFromCache(); // get order data from cache
 	},
 
 	methods: {
@@ -106,6 +106,20 @@ export default {
 				}
 			}
 		},
+
+		fetchOrderFromCache() {
+			const cachedData = localStorage.getItem('orderData');
+			if (cachedData) {
+				try {
+					const orders = JSON.parse(cachedData);
+					this.addStatusToItems(orders);
+					this.hasDeliveryOrder = orders.some(order => order.status === 'In Delivery');
+				} catch (error) {
+					console.error('Error parsing cached order data:', error);
+				}
+			}
+		},
+
 
 		cacheData() {
 			const dataToCache = {
@@ -135,16 +149,18 @@ export default {
 
 			axios
 				.get('/api/get-order') //get from database - order to check any In Delivery item
-				.then((response) => {
+				.then(response => {
 					const orders = response.data;
-					this.hasDeliveryOrder = orders.some((order) => order.status === 'In Delivery');
+					this.addStatusToItems(orders);
+					this.cacheOrderData(orders); // Cache the fetched order data
+					this.hasDeliveryOrder = orders.some(order => order.status === 'In Delivery');
 				})
-				.catch((error) => {
-					console.log(error);
+				.catch(error => {
+					console.error('Error fetching order data:', error);
 				});
 		},
 
-		fetchCartFromStorage() {
+		fetchCartFromCache() {
 			const cartData = localStorage.getItem('cartItems');
 			if (cartData) {
 				this.cartItems = JSON.parse(cartData);
@@ -155,6 +171,9 @@ export default {
 			localStorage.setItem('cartItems', JSON.stringify(this.cartItems));
 		},
 
+		cacheOrderData(orders) {
+			localStorage.setItem('orderData', JSON.stringify(orders));
+		},
 
 		updateDisplayedItems() {
 			const startIndex = (this.currentPage - 1) * this.pageSize;
@@ -235,8 +254,10 @@ export default {
 		removeFromCart(itemId) {
 			this.cartItems = this.cartItems.filter((item) => item.id !== itemId);
 			this.cacheData(); // Update the cached cart data
+			this.cacheOrderData(this.orders); // Update the cached order data
 			console.log(this.cartItems);
 		},
+
 
 		toggleCart() {
 			this.showCart = !this.showCart;

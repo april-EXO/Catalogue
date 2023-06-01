@@ -46,7 +46,7 @@
 	display: inline-block;
 	margin-bottom: 10px;
 	color: #ff4081;
-	text-decoration: none;
+	text-decoration: underline;
 	font-weight: bold;
   }
   

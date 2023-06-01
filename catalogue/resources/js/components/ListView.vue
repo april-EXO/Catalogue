@@ -33,7 +33,7 @@
 		</div>
 	</div>
 </template>
-  
+
 <script>
 import axios from 'axios';
 import Header from './Header.vue';
@@ -48,15 +48,29 @@ export default {
 		};
 	},
 	mounted() {
+		this.fetchOrdersFromCache(); // Attempt to load data from cache first
 		this.fetchOrders();
 	},
 	methods: {
+		fetchOrdersFromCache() {
+			const cachedData = localStorage.getItem('orderListData');
+			if (cachedData) {
+				try {
+					this.orders = JSON.parse(cachedData);
+				} catch (error) {
+					console.error('Error parsing cached order list data:', error);
+				}
+			}
+		},
+		cacheOrders() {
+			localStorage.setItem('orderListData', JSON.stringify(this.orders));
+		},
 		fetchOrders() {
 			axios
 				.get('api/get-order')
 				.then(response => {
 					this.orders = response.data;
-					console.log('success');
+					this.cacheOrders(); // Cache the fetched orders
 				})
 				.catch(error => {
 					console.error('Error fetching orders:', error);
@@ -72,6 +86,7 @@ export default {
 					if (order) {
 						order.status = status;
 					}
+					this.cacheOrders(); // Update the cached order list
 				})
 				.catch(error => {
 					console.error('Error updating order status:', error);
@@ -83,6 +98,6 @@ export default {
 	},
 };
 </script>
-  
-  
+
+
 <style src="../../css/ListView.css" scoped></style>
